@@ -9,6 +9,7 @@ const DEBOUNCE_DELAY = 300;
 const getName = document.querySelector('#search-box');
 const listCountry = document.querySelector('.country-list');
 
+
 //функції івенту виклику запита, і виводу даних
 function getContryName(event) {
     let nameContry = event.target.value.trim();
@@ -18,11 +19,12 @@ function getContryName(event) {
     }
     fetchCountries(nameContry).then(data => {
         let lengthJSON = data.length;
+        console.log(lengthJSON);
         if (lengthJSON > 10) {
-            Notiflix.Notify.info('Cogito ergo sum');
+            Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
             return;
         }
-        if (lengthJSON >= 2 && lengthJSON < 10) {
+        if (lengthJSON >= 2 && lengthJSON <= 10) {
             printCountryMor(data);
             return;
         }
@@ -33,7 +35,7 @@ function getContryName(event) {
 }
 
 
-// Створення списку де більше 1 країни і менше 10
+// Створення списку, де більше 1 країни і менше 11
 function printCountryMor(countries) {
     const nameCon = countries.map((country) => {
         return `
@@ -48,7 +50,7 @@ function printCountryMor(countries) {
 }
 
 
-// створення спискуде де одна країна
+// створення списку, де одна країна
 function printCounryOne(countries) {
     const nameCon = countries.map((country) => {
         const language = Object.values(country.languages);
