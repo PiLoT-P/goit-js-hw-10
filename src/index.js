@@ -1,39 +1,41 @@
 import './css/styles.css';
-import { fetchCountries } from './fetchCountries';
+
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
+import { fetchCountries } from './fetchCountries';
+
 const DEBOUNCE_DELAY = 300;
-const inputText = document.querySelector('#search-box');
+const getName = document.querySelector('#search-box');
 const listCountry = document.querySelector('.country-list');
 
+//функції івенту виклику запита, і виводу даних
 function getContryName(event) {
     let nameContry = event.target.value.trim();
     if (!nameContry) {
         listCountry.innerHTML = '';
         return;
     }
-    console.log(nameContry)
     fetchCountries(nameContry).then(data => {
-        console.log(data);
-        let lengthRequest = data.length;
-        if (lengthRequest > 10) {
+        let lengthJSON = data.length;
+        if (lengthJSON > 10) {
             Notiflix.Notify.info('Cogito ergo sum');
             return;
         }
-        if (lengthRequest > 2 && lengthRequest < 10) {
+        if (lengthJSON >= 2 && lengthJSON < 10) {
             printCountryMor(data);
             return;
         }
         printCounryOne(data);
     }).catch(error => {
-        console.log(error);
         Notiflix.Notify.failure('Oops, there is no country with that name');
     });
 }
 
-function printCountryMor(countrys) {
-    const nameCon = countrys.map((country) => {
+
+// Створення списку де більше 1 країни і менше 10
+function printCountryMor(countries) {
+    const nameCon = countries.map((country) => {
         return `
             <li class = 'item'>
                 <img src="${country.flags.svg}" width ='25' height = '25'alt="">
@@ -43,12 +45,12 @@ function printCountryMor(countrys) {
     })
         .join('');
     listCountry.innerHTML = nameCon;
-    console.log('this function more');
-    console.log(nameCon);
 }
 
-function printCounryOne(countrys) {
-    const nameCon = countrys.map((country) => {
+
+// створення спискуде де одна країна
+function printCounryOne(countries) {
+    const nameCon = countries.map((country) => {
         const language = Object.values(country.languages);
         return `
             <li>
@@ -62,8 +64,7 @@ function printCounryOne(countrys) {
     })
         .join('');
     listCountry.innerHTML = nameCon;
-    console.log('this function one');
-    console.log(nameCon);
 }
 
-inputText.addEventListener('input', debounce(getContryName,DEBOUNCE_DELAY));
+
+getName.addEventListener('input', debounce(getContryName,DEBOUNCE_DELAY));
